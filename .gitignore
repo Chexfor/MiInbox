@@ -1,0 +1,25 @@
+# MiInbox - Root Git Ignore
+# Dependencies
+node_modules/
+vendor/
+# Environment and Secrets
+.env
+.env.backup
+.env.production
+# IDEs and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+# Build and Cache
+dist/
+public/build/
+public/storage/
+storage/*.key
+.phpunit.result.cache
+# App Readmes (Temporary exclusion requested)
+backend/README.md
+frontend/README.md
+# SQLite
+database/*.sqlite
+database/*.sqlite-journal
