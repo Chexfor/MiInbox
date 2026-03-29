@@ -1,0 +1,24 @@
+﻿PHPUnit 11.5.55 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.1
+Configuration: D:\Mi Inbox\backend\phpunit.xml
+
+.FF                                                                 3 / 3 (100%)
+
+Time: 00:00.991, Memory: 46.00 MB
+
+There were 2 failures:
+
+1) Tests\Feature\Communication\MessagingApiTest::a_user_can_send_a_message_and_increment_unread_count
+User 2 should have 1 unread message
+Failed asserting that 0 matches expected 1.
+
+D:\Mi Inbox\backend\tests\Feature\Communication\MessagingApiTest.php:74
+
+2) Tests\Feature\Communication\MessagingApiTest::reading_messages_marks_them_as_read_and_resets_unread_count
+Failed asserting that 0 matches expected 1.
+
+D:\Mi Inbox\backend\tests\Feature\Communication\MessagingApiTest.php:93
+
+FAILURES!
+Tests: 3, Assertions: 9, Failures: 2, PHPUnit Deprecations: 3.

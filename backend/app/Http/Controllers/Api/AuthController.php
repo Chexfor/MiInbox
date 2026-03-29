@@ -46,7 +46,7 @@ final class AuthController extends Controller
      */
     public function me(Request $request): JsonResponse
     {
-        return response()->json($request->user());
+        return response()->json(new \App\Http\Resources\UserResource($request->user()));
     }
 
     /**
