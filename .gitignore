@@ -23,3 +23,5 @@ frontend/README.md
 # SQLite
 database/*.sqlite
 database/*.sqlite-journal
+
+/backend/composer.phar
