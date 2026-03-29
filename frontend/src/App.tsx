@@ -1,7 +1,9 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect } from 'react';
 import { AuthProvider, useAuth } from './features/auth/hooks/useAuth.tsx';
 import { ConnectionBadge } from './shared/ui/ConnectionBadge';
-import { MessageSquare, LogOut, Mail, Lock, Loader2, AlertCircle } from 'lucide-react';
+import { MessageSquare, Mail, Lock, Loader2, AlertCircle } from 'lucide-react';
+import { useState, type FormEvent } from 'react';
+import { MessagingLayout } from './features/messaging/components/MessagingLayout';
 
 // ─── Login Form ───────────────────────────────────────────────────────────────
 
@@ -105,56 +107,7 @@ const LoginForm = () => {
 // ─── Dashboard ────────────────────────────────────────────────────────────────
 
 const Dashboard = () => {
-  const { user, signOut, isLoading } = useAuth();
-
-  return (
-    <div className="min-h-screen bg-slate-950 text-white">
-      {/* Topbar */}
-      <header className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-md px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-indigo-600 rounded-xl">
-            <MessageSquare size={20} className="text-white" />
-          </div>
-          <span className="font-bold text-lg bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
-            Mi Inbox
-          </span>
-        </div>
-        <div className="flex items-center gap-5">
-          <ConnectionBadge />
-          <button
-            id="logout-btn"
-            onClick={signOut}
-            disabled={isLoading}
-            className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition"
-          >
-            <LogOut size={16} />
-            Salir
-          </button>
-        </div>
-      </header>
-
-      {/* Content */}
-      <main className="max-w-2xl mx-auto p-8">
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center space-y-4">
-          {/* Avatar */}
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center text-2xl font-black mx-auto">
-            {user?.name?.charAt(0).toUpperCase()}
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-white">{user?.name}</h2>
-            <p className="text-slate-500 text-sm">{user?.email}</p>
-          </div>
-          <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-emerald-400 text-xs font-medium">Sesión activa con JWT</span>
-          </div>
-          <p className="text-slate-600 text-sm pt-2">
-            La arquitectura DDD + CQRS + Sockets está operativa.
-          </p>
-        </div>
-      </main>
-    </div>
-  );
+  return <MessagingLayout />;
 };
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
