@@ -27,10 +27,15 @@ export const ChatArea: React.FC<ChatAreaProps> = ({ thread }) => {
 
   useEffect(() => {
     if (thread) {
-      setSubject(thread.subject || 'Sin asunto');
+      if (thread.is_group) {
+        setSubject(thread.subject || 'Grupo sin asunto');
+      } else {
+        const otherParticipant = thread.participants?.find(p => p.id !== currentUser?.id);
+        setSubject(otherParticipant?.name || 'Usuario B');
+      }
       setDate(new Date(thread.last_message_at || new Date()));
     }
-  }, [thread]);
+  }, [thread, currentUser]);
 
   if (!thread) {
     return (

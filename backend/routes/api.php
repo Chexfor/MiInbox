@@ -24,6 +24,9 @@ Route::prefix('v1')->group(function () {
             Route::post('logout', [AuthController::class, 'logout']);
         });
 
+        // Users
+        Route::get('users', [\App\Http\Controllers\Api\UserController::class, 'index']);
+
         // Messaging
         Route::prefix('messaging')->group(function () {
             Route::get('threads', [\App\Http\Controllers\Api\ThreadController::class, 'index']);

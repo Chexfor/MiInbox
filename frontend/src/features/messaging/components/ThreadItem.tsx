@@ -1,5 +1,6 @@
 import React from 'react';
 import { Avatar } from '@/shared/ui/Avatar';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import type { Thread } from '../types';
 
 interface ThreadItemProps {
@@ -9,7 +10,14 @@ interface ThreadItemProps {
 }
 
 export const ThreadItem: React.FC<ThreadItemProps> = ({ thread, isActive = false, onClick }) => {
-  const otherParticipant = thread.participants[0] || { name: 'Participante' };
+  const { user } = useAuth();
+  const otherParticipants = thread.participants?.filter(p => p.id !== user?.id) || [];
+  const displayUser = otherParticipants[0] || thread.participants[0] || { name: 'Desconocido' };
+
+  const title = thread.is_group ? (thread.subject || 'Grupo sin nombre') : displayUser.name;
+  // Si es grupo mostramos un ícono o avatar genérico de grupo.
+  const avatarName = thread.is_group ? 'Grupo' : displayUser.name;
+  const avatarUrl = thread.is_group ? undefined : displayUser.avatar_url;
 
   return (
     <div
@@ -27,11 +35,12 @@ export const ThreadItem: React.FC<ThreadItemProps> = ({ thread, isActive = false
         ${isActive ? 'h-10 bg-indigo-500 shadow-lg shadow-indigo-500/50' : 'group-hover:h-4 bg-slate-700'}
       `} />
 
-      <Avatar name={otherParticipant.name} src={otherParticipant.avatar_url} size="md" />
+      {/* To-Do: Usar multiavatars si es de grupo */}
+      <Avatar name={avatarName} src={avatarUrl} size="md" />
       
       <div className="flex-1 min-w-0">
         <h4 className={`font-bold text-sm truncate uppercase tracking-wider transition-colors ${isActive ? 'text-indigo-400' : 'text-slate-300'}`}>
-          {thread.subject || otherParticipant.name}
+          {title}
         </h4>
         <p className="text-[10px] text-slate-600 truncate mt-0.5 font-medium group-hover:text-slate-500">
           Última actividad: {new Date(thread.last_message_at).toLocaleDateString()}

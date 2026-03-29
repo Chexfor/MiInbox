@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ThreadList } from './ThreadList';
 import { ChatArea } from './ChatArea';
+import { NewChatModal } from './NewChatModal';
 import { Search, Plus, Mail, MessageSquare, ChevronLeft } from 'lucide-react';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import type { Thread } from '../types';
@@ -10,6 +11,7 @@ export const MessagingLayout: React.FC = () => {
   const [selectedThread, setSelectedThread] = useState<Thread | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileListOpen, setIsMobileListOpen] = useState(true);
+  const [isNewChatOpen, setIsNewChatOpen] = useState(false);
 
   const handleSelectThread = (thread: Thread) => {
     setSelectedThread(thread);
@@ -60,7 +62,10 @@ export const MessagingLayout: React.FC = () => {
 
         {/* NUEVO MENSAJE - Derecha */}
         <div className="w-1/4 flex justify-end">
-          <button className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-3 lg:px-5 py-2 lg:py-2.5 rounded-xl font-bold text-[10px] lg:text-sm transition-all shadow-lg shadow-indigo-600/20 active:scale-95 group">
+          <button 
+            onClick={() => setIsNewChatOpen(true)}
+            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-3 lg:px-5 py-2 lg:py-2.5 rounded-xl font-bold text-[10px] lg:text-sm transition-all shadow-lg shadow-indigo-600/20 active:scale-95 group"
+          >
             <span className="hidden sm:inline">Nuevo mensaje</span>
             <Plus size={16} className="sm:hidden" />
             <Mail size={16} className="hidden sm:inline group-hover:translate-x-1 transition-transform" />
@@ -102,7 +107,6 @@ export const MessagingLayout: React.FC = () => {
 
       </main>
 
-      {/* Footer / User Badge */}
       <footer className="px-8 py-3 bg-slate-900/30 border-t border-slate-900 flex justify-between items-center text-[10px] text-slate-600 shrink-0">
          <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
@@ -110,6 +114,17 @@ export const MessagingLayout: React.FC = () => {
          </div>
          <div className="hidden sm:block font-mono">ESTRUCTURA MOCKUP V2.1</div>
       </footer>
+
+      {/* MODAL */}
+      <NewChatModal 
+        isOpen={isNewChatOpen} 
+        onClose={() => setIsNewChatOpen(false)} 
+        onCreated={(thread) => {
+          setSelectedThread(thread);
+          setIsMobileListOpen(false);
+          // Opcionalmente forzar a ThreadList a recargar.
+        }} 
+      />
     </div>
   );
 };

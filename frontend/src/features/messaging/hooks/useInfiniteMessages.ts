@@ -1,55 +1,82 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { messagingApi } from '../api/messaging.api';
 import type { Message } from '../types';
 
 export const useInfiniteMessages = (threadId: number | null) => {
   const [messages, setMessages] = useState<Message[]>([]);
+  const messagesRef = useRef<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [isSending, setIsSending] = useState(false);
 
-  const fetchMessages = useCallback(async (isInitial: boolean = false) => {
-    if (!threadId) return;
+  const currentRequestThreadId = useRef<number | null>(null);
+  const isFetchingRef = useRef(false);
+
+  const fetchMessages = useCallback(async (isInitial: boolean) => {
+    if (!threadId || isFetchingRef.current) return;
 
     try {
+      isFetchingRef.current = true;
+      currentRequestThreadId.current = threadId;
       setIsLoading(true);
-      const beforeId = !isInitial && messages.length > 0 ? messages[0].id : undefined;
       
+      let beforeId: number | undefined;
+      if (!isInitial && messagesRef.current.length > 0) {
+        beforeId = messagesRef.current[0].id;
+      }
+
       const response = await messagingApi.getMessages(threadId, {
         limit: 50,
         before_id: beforeId
       });
 
+      // If user changed thread mid-request or unmounted, discard
+      if (currentRequestThreadId.current !== threadId) {
+        return;
+      }
+
       const newMessages = response.data;
       
-      if (isInitial) {
-        setMessages(newMessages);
-      } else {
-        setMessages(prev => [...newMessages, ...prev]);
-      }
-      
+      setMessages(prev => {
+        const nextMessages = isInitial ? newMessages : [...newMessages, ...prev];
+        messagesRef.current = nextMessages;
+        return nextMessages;
+      });
       setHasMore(response.meta.has_more ?? false);
     } catch (error) {
       console.error('Error fetching messages:', error);
     } finally {
-      setIsLoading(false);
+      if (currentRequestThreadId.current === threadId) {
+        setIsLoading(false);
+        isFetchingRef.current = false;
+      }
     }
-  }, [threadId, messages]);
+  }, [threadId]);
 
   // Initial load
   useEffect(() => {
     if (threadId) {
-      setMessages([]);
+      setMessages([]); // Clear messages immediately on thread change
+      messagesRef.current = [];
       setHasMore(true);
+      
+      isFetchingRef.current = false; // allow a new fetch immediately
       fetchMessages(true);
+
+      return () => {
+        // Invalidate in-flight requests if unmounted
+        if (currentRequestThreadId.current === threadId) {
+          currentRequestThreadId.current = null;
+        }
+      };
     }
   }, [threadId, fetchMessages]);
 
   const loadMore = useCallback(() => {
-    if (!isLoading && hasMore) {
-      fetchMessages();
+    if (hasMore && !isLoading && !isFetchingRef.current) {
+      fetchMessages(false);
     }
-  }, [isLoading, hasMore, fetchMessages]);
+  }, [hasMore, isLoading, fetchMessages]);
 
   const sendMessage = async (body: string, type: string = 'text') => {
     if (!threadId || !body.trim()) return;
@@ -57,8 +84,13 @@ export const useInfiniteMessages = (threadId: number | null) => {
     try {
       setIsSending(true);
       const response = await messagingApi.sendMessage(threadId, { body, type });
-      // response.data is a single Message object
-      setMessages(prev => [...prev, response.data]);
+      
+      setMessages(prev => {
+        const nextMessages = [...prev, response.data];
+        messagesRef.current = nextMessages;
+        return nextMessages;
+      });
+      
       return response.data;
     } catch (error) {
       console.error('Error sending message:', error);
