@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useReducer, useCallback, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useReducer,
+  useCallback,
+  type ReactNode,
+  type JSX,
+} from 'react';
 import { authApi, type LoginCredentials, type UserProfile } from '../api/auth.api';
 
 // ─── State Shape ─────────────────────────────────────────────────────────────
@@ -23,18 +30,12 @@ type AuthAction =
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
-    case 'AUTH_LOADING':
-      return { ...state, isLoading: true, error: null };
-    case 'AUTH_SUCCESS':
-      return { ...state, isLoading: false, user: action.payload.user, token: action.payload.token, error: null };
-    case 'AUTH_ERROR':
-      return { ...state, isLoading: false, error: action.payload };
-    case 'AUTH_LOGOUT':
-      return { user: null, token: null, isLoading: false, error: null };
-    case 'AUTH_CLEAR_ERROR':
-      return { ...state, error: null };
-    default:
-      return state;
+    case 'AUTH_LOADING':     return { ...state, isLoading: true, error: null };
+    case 'AUTH_SUCCESS':     return { ...state, isLoading: false, user: action.payload.user, token: action.payload.token, error: null };
+    case 'AUTH_ERROR':       return { ...state, isLoading: false, error: action.payload };
+    case 'AUTH_LOGOUT':      return { user: null, token: null, isLoading: false, error: null };
+    case 'AUTH_CLEAR_ERROR': return { ...state, error: null };
+    default:                 return state;
   }
 };
 
@@ -51,7 +52,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 // ─── Provider ────────────────────────────────────────────────────────────────
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AuthProvider = ({ children }: { children: ReactNode }): JSX.Element => {
   const [state, dispatch] = useReducer(authReducer, {
     user: null,
     token: localStorage.getItem('auth_token'),
@@ -64,12 +65,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const { data: tokenData } = await authApi.login(credentials);
       localStorage.setItem('auth_token', tokenData.access_token);
-
       const { data: profile } = await authApi.me();
       dispatch({ type: 'AUTH_SUCCESS', payload: { token: tokenData.access_token, user: profile } });
-    } catch (err: any) {
-      const message = err.response?.data?.message ?? 'Credenciales incorrectas.';
-      dispatch({ type: 'AUTH_ERROR', payload: message });
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Credenciales incorrectas.';
+      dispatch({ type: 'AUTH_ERROR', payload: msg });
     }
   }, []);
 

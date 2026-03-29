@@ -13,11 +13,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
+        // Create the main test user
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
         ]);
+
+        // Create 4 more users for multiple user testing
+        foreach (range(1, 4) as $index) {
+            User::factory()->create([
+                'name' => "User {$index}",
+                'email' => "user{$index}@example.com",
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            ]);
+        }
     }
 }
