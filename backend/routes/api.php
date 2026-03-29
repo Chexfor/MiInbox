@@ -23,5 +23,16 @@ Route::prefix('v1')->group(function () {
             Route::get('me', [AuthController::class, 'me']);
             Route::post('logout', [AuthController::class, 'logout']);
         });
+
+        // Messaging
+        Route::prefix('messaging')->group(function () {
+            Route::get('threads', [\App\Http\Controllers\Api\ThreadController::class, 'index']);
+            Route::post('threads', [\App\Http\Controllers\Api\ThreadController::class, 'store']);
+            
+            Route::prefix('threads/{threadId}')->group(function () {
+                Route::get('messages', [\App\Http\Controllers\Api\MessageController::class, 'index']);
+                Route::post('messages', [\App\Http\Controllers\Api\MessageController::class, 'store']);
+            });
+        });
     });
 });
