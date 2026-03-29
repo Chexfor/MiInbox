@@ -1,0 +1,31 @@
+﻿PHPUnit 11.5.55 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.1
+Configuration: D:\Mi Inbox\backend\phpunit.xml
+
+.FE                                                                 3 / 3 (100%)
+
+Time: 00:03.223, Memory: 46.00 MB
+
+There was 1 error:
+
+1) Tests\Feature\Communication\MessagingApiTest::reading_messages_marks_them_as_read_and_resets_unread_count
+ErrorException: Trying to access array offset on null
+
+D:\Mi Inbox\backend\vendor\laravel\framework\src\Illuminate\Foundation\Bootstrap\HandleExceptions.php:258
+D:\Mi Inbox\backend\tests\Feature\Communication\MessagingApiTest.php:101
+
+--
+
+There was 1 failure:
+
+1) Tests\Feature\Communication\MessagingApiTest::a_user_can_send_a_message_and_increment_unread_count
+Expected response status code [200] but received 401.
+Failed asserting that 401 is identical to 200.
+
+D:\Mi Inbox\backend\vendor\laravel\framework\src\Illuminate\Testing\TestResponseAssert.php:45
+D:\Mi Inbox\backend\vendor\laravel\framework\src\Illuminate\Testing\TestResponse.php:160
+D:\Mi Inbox\backend\tests\Feature\Communication\MessagingApiTest.php:78
+
+ERRORS!
+Tests: 3, Assertions: 7, Errors: 1, Failures: 1, PHPUnit Deprecations: 3.

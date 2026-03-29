@@ -1,0 +1,20 @@
+﻿PHPUnit 11.5.55 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.1
+Configuration: D:\Mi Inbox\backend\phpunit.xml
+
+.E.                                                                 3 / 3 (100%)
+
+Time: 00:00.576, Memory: 46.00 MB
+
+There was 1 error:
+
+1) Tests\Feature\Communication\MessagingApiTest::a_user_can_send_a_message_and_increment_unread_count
+PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException: Token could not be parsed from the request.
+
+D:\Mi Inbox\backend\vendor\php-open-source-saver\jwt-auth\src\JWTGuard.php:462
+D:\Mi Inbox\backend\vendor\php-open-source-saver\jwt-auth\src\JWTGuard.php:183
+D:\Mi Inbox\backend\tests\Feature\Communication\MessagingApiTest.php:68
+
+ERRORS!
+Tests: 3, Assertions: 9, Errors: 1, PHPUnit Deprecations: 3.

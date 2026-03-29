@@ -31,7 +31,7 @@ final class SendMessageHandler
             $this->threadRepository->updateLastMessageAt($command->threadId);
 
             // Increment unread count for other participants
-            DB::table('thread_user')
+            \Illuminate\Support\Facades\DB::table('thread_user')
                 ->where('thread_id', $command->threadId)
                 ->where('user_id', '!=', $command->senderId)
                 ->increment('unread_count');

@@ -14,7 +14,8 @@ class ThreadResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $currentUserPivot = $this->participants->where('id', $request->user()?->id)->first()?->pivot;
+        $userId = (int) ($request->user()?->id);
+        $currentUserPivot = $this->participants->where('id', $userId)->first()?->pivot;
 
         return [
             'id'              => $this->id,
