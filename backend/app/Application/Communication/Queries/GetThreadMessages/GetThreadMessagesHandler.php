@@ -19,7 +19,11 @@ final class GetThreadMessagesHandler
         // Mark messages as read for this user in this thread
         $this->messageRepository->markAsRead($query->threadId, $query->currentUserId);
 
-        // Retrieve messages with eager loading
-        return $this->messageRepository->getThreadMessages($query->threadId, $query->limit);
+        // Retrieve messages with cursor-based pagination
+        return $this->messageRepository->getThreadMessagesPaginated(
+            $query->threadId, 
+            $query->limit, 
+            $query->beforeId
+        );
     }
 }

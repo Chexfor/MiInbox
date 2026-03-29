@@ -22,15 +22,25 @@ class MessageController extends Controller
     /**
      * Display a listing of messages for a specific thread.
      */
-    public function index(int $threadId): JsonResponse
+    public function index(Request $request, int $threadId): JsonResponse
     {
         $userId = Auth::guard('api')->id();
-        $query = new GetThreadMessagesQuery($threadId, $userId);
+        $query = new GetThreadMessagesQuery(
+            $threadId, 
+            $userId, 
+            (int) $request->query('limit', 50),
+            $request->query('before_id') ? (int) $request->query('before_id') : null
+        );
+        
         $messages = $this->getThreadMessagesHandler->handle($query);
 
         return response()->json([
             'status' => 'success',
             'data'   => MessageResource::collection($messages),
+            'meta'   => [
+                'has_more' => $messages->count() >= (int) $request->query('limit', 50),
+                'oldest_id' => $messages->first()?->id,
+            ]
         ]);
     }
 

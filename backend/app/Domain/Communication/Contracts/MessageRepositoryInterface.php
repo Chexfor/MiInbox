@@ -11,6 +11,8 @@ interface MessageRepositoryInterface
     
     public function getThreadMessages(int $threadId, int $limit = 50): Collection;
     
+    public function getThreadMessagesPaginated(int $threadId, int $limit = 50, ?int $beforeId = null): Collection;
+    
     public function create(array $data): Message;
     
     public function markAsRead(int $threadId, int $userId): void;

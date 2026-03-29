@@ -23,6 +23,26 @@ class EloquentThreadRepository implements ThreadRepositoryInterface
         ->get();
     }
 
+    public function getAllForUserPaginated(int $userId, int $limit = 20, ?string $search = null)
+    {
+        $query = Thread::whereHas('participants', function ($q) use ($userId) {
+            $q->where('user_id', $userId);
+        })
+        ->with(['participants', 'latestMessage.sender'])
+        ->orderBy('last_message_at', 'desc');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('subject', 'like', "%{$search}%")
+                  ->orWhereHas('participants', function ($pq) use ($search) {
+                      $pq->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        return $query->paginate($limit);
+    }
+
     public function findBetweenUsers(int $userId, int $otherUserId): ?Thread
     {
         return Thread::where('is_group', false)

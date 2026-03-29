@@ -11,6 +11,8 @@ interface ThreadRepositoryInterface
     
     public function getAllForUser(int $userId): Collection;
     
+    public function getAllForUserPaginated(int $userId, int $limit = 20, ?string $search = null);
+    
     public function findBetweenUsers(int $userId, int $otherUserId): ?Thread;
     
     public function create(array $data): Thread;

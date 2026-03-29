@@ -24,6 +24,19 @@ class EloquentMessageRepository implements MessageRepositoryInterface
             ->reverse();
     }
 
+    public function getThreadMessagesPaginated(int $threadId, int $limit = 50, ?int $beforeId = null): Collection
+    {
+        $query = Message::where('thread_id', $threadId)
+            ->with('sender')
+            ->latest();
+
+        if ($beforeId) {
+            $query->where('id', '<', $beforeId);
+        }
+
+        return $query->limit($limit)->get()->reverse();
+    }
+
     public function create(array $data): Message
     {
         return Message::create($data);

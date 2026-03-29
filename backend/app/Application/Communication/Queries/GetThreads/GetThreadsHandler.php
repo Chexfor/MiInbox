@@ -14,8 +14,12 @@ final class GetThreadsHandler
     /**
      * Handle the query to get all threads for a user.
      */
-    public function handle(GetThreadsQuery $query): Collection
+    public function handle(GetThreadsQuery $query): mixed
     {
-        return $this->threadRepository->getAllForUser($query->userId);
+        return $this->threadRepository->getAllForUserPaginated(
+            $query->userId,
+            $query->limit,
+            $query->search
+        );
     }
 }
