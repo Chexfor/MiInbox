@@ -21,7 +21,7 @@ export const messagingApi = {
   /**
    * Create a new conversation thread.
    */
-  createThread: async (data: { participant_ids: number[]; subject?: string; body?: string }) => {
+  createThread: async (data: { participant_ids: number[]; is_group?: boolean; subject?: string; body?: string }) => {
     const response = await api.post<StandardResponse<Thread>>('/messaging/threads', data);
     return response.data;
   },
