@@ -70,7 +70,7 @@ Para asegurar que la lógica de mensajería y el control de sesiones son correct
 cd backend
 php artisan test
 ```
-
+<p align="center"><img src="https://github.com/user-attachments/assets/948de741-fab1-4d6a-bcb0-2eb299c4e188" alt="Resultado de pruebas" width="700"></p>```
 ---
 
 ## 🗺️ Documentación Adicional
