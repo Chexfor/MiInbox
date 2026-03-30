@@ -1,6 +1,10 @@
 # Mi Inbox - Frontend (SPA)
 
 Aplicación de mensajería moderna construida con **React 19**, enfocada en la velocidad, interactividad en tiempo real y una experiencia de usuario premium con **Tailwind CSS 4**.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/6dffa34d-e49e-4a0f-84c6-5cda099b17e5" alt="Resultado de pruebas adicional" width="900">
+</p>
+
 
 ---
 
