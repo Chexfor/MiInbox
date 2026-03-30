@@ -65,8 +65,9 @@ export const MessageList: React.FC<MessageListProps> = ({
       </div>
 
       {messages.map((message, index) => {
-        const isMe = message.sender.id === currentUser?.id;
-        const showSender = index === 0 || messages[index - 1].sender.id !== message.sender.id;
+        // Fallback to sender id evaluation if is_own_message is undefined
+        const isMe = message.is_own_message ?? (message.sender?.id === currentUser?.id);
+        const showSender = index === 0 || messages[index - 1].sender?.id !== message.sender?.id;
         
         return (
           <MessageBubble 

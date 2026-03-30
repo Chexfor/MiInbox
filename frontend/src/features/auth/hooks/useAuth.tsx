@@ -3,6 +3,7 @@ import {
   useContext,
   useReducer,
   useCallback,
+  useEffect,
   type ReactNode,
   type JSX,
 } from 'react';
@@ -67,8 +68,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }): JSX.Element
       localStorage.setItem('auth_token', tokenData.access_token);
       const { data: profile } = await authApi.me();
       dispatch({ type: 'AUTH_SUCCESS', payload: { token: tokenData.access_token, user: profile } });
-    } catch (err: unknown) {
-      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Credenciales incorrectas.';
+    } catch (err: any) {
+      const status = err?.response?.status;
+      const msg = err?.response?.data?.message ?? 'Credenciales incorrectas.';
+      
+      if (status === 409) {
+        dispatch({ type: 'AUTH_CLEAR_ERROR' });
+        // Usar un navegador nativo para confirmación simple
+        if (window.confirm(msg + '\n\nSi aceptas, la otra sesión será cerrada.')) {
+          // Reintentar con force = true
+          return signIn({ ...credentials, force: true });
+        }
+        return; // Usuario canceló
+      }
+
       dispatch({ type: 'AUTH_ERROR', payload: msg });
     }
   }, []);
@@ -93,6 +106,42 @@ export const AuthProvider = ({ children }: { children: ReactNode }): JSX.Element
   }, []);
 
   const clearError = useCallback(() => dispatch({ type: 'AUTH_CLEAR_ERROR' }), []);
+
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      dispatch({ type: 'AUTH_LOGOUT' });
+    };
+    window.addEventListener('auth_unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('auth_unauthorized', handleUnauthorized);
+  }, []);
+
+  useEffect(() => {
+    if (state.user) {
+      const channel = `user.${state.user.id}`;
+      // @ts-ignore - window.Echo is globally defined in main.tsx/echo.config.ts
+      const echo = window.Echo;
+      
+      if (echo) {
+        echo.private(channel).listen('.session.kicked', () => {
+          localStorage.removeItem('auth_token');
+          dispatch({ type: 'AUTH_LOGOUT' });
+          
+          import('react-hot-toast').then(({ toast }) => {
+            toast.error('Tu sesión ha iniciado en otro dispositivo. Se ha cerrado esta sesión.', { duration: 6000 });
+          });
+
+          // Forzar recarga completa para "matar" hilos de Echo y persistencia residual
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);
+        });
+
+        return () => {
+          echo.leave(channel);
+        };
+      }
+    }
+  }, [state.user]);
 
   return (
     <AuthContext.Provider value={{ ...state, signIn, signOut, fetchProfile, clearError }}>

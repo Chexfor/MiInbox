@@ -27,12 +27,17 @@ final class AuthController extends Controller
                 new LoginCommand(
                     email: $request->validated('email'),
                     password: $request->validated('password'),
+                    force: (bool) $request->validated('force'),
                 )
             );
         } catch (InvalidArgumentException $e) {
             return response()->json([
                 'message' => $e->getMessage(),
             ], 401);
+        } catch (\Symfony\Component\HttpKernel\Exception\ConflictHttpException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 409);
         }
 
         return response()->json([
@@ -54,6 +59,12 @@ final class AuthController extends Controller
      */
     public function logout(): JsonResponse
     {
+        $user = auth('api')->user();
+        if ($user) {
+            $user->current_jti = null;
+            $user->save();
+        }
+
         Auth::guard('api')->logout();
 
         return response()->json(['message' => 'Sesión cerrada correctamente.']);

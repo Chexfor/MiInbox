@@ -122,9 +122,12 @@ const AppContent = () => {
   return token && user ? <Dashboard /> : <LoginForm />;
 };
 
+import { Toaster } from 'react-hot-toast';
+
 export default function App() {
   return (
     <AuthProvider>
+      <Toaster position="top-right" />
       <AppContent />
     </AuthProvider>
   );

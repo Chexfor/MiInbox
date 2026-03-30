@@ -13,6 +13,7 @@ export interface Message {
   type: 'text' | 'image' | 'file';
   read_at?: string;
   created_at: string;
+  is_own_message?: boolean;
 }
 
 export interface Thread {
