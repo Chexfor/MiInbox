@@ -16,12 +16,21 @@ dist/
 public/build/
 public/storage/
 storage/*.key
-.phpunit.result.cache
-# App Readmes (Temporary exclusion requested)
-backend/README.md
-frontend/README.md
-# SQLite
-database/*.sqlite
-database/*.sqlite-journal
+# App Specifics
+/backend/composer.phar
+/backend/.phpunit.cache
+/backend/public/storage
+/backend/public/build
+/backend/public/hot
+/backend/storage/*.key
+/backend/storage/framework/cache/data/*
+/backend/storage/framework/sessions/*
+/backend/storage/framework/testing/*
+/backend/storage/framework/views/*
+/backend/storage/logs/*
+
+/frontend/dist
+/frontend/dist-ssr
+/frontend/.local
 
 /backend/composer.phar
