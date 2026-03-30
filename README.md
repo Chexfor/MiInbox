@@ -12,7 +12,7 @@ Mi Inbox es una solución corporativa de mensajería interna diseñada para alta
 
 ---
 
-## 🚀 Guía de Instalación "Sin Errores"
+## 🚀 Guía de Instalación
 
 ### 1. Preparación del Backend
 ```bash
@@ -43,10 +43,12 @@ Para que el tiempo real funcione, los valores de **Reverb** deben estar perfecta
 > Si cambias el puerto de Reverb en el backend, debes actualizarlo inmediatamente en el frontend para evitar errores de conexión (handshake).
 
 ### 3. Ejecución de Servicios (Mantener 4 terminales abiertas)
+**Dentro de la carpeta backend **
 1. **API**: `php artisan serve`
 2. **WebSockets (Reverb)**: `php artisan reverb:start`
 3. **Procesador de Colas**: `php artisan queue:work`
-4. **Frontend**: `cd frontend && npm install && npm run dev`
+**Dentro de la carpeta frontend **
+4. **Frontend**: `npm install , npm run dev`
 
 ---
 
