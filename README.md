@@ -1,4 +1,4 @@
-# Mi Inbox - Plataforma de Mensajería Estabilizada
+# Mi Inbox - Plataforma de Mensajería
 
 Mi Inbox es una solución corporativa de mensajería interna diseñada para alta disponibilidad y tiempo real. Este documento proporciona la guía definitiva para poner en marcha el sistema desde cero sin complicaciones.
 
@@ -11,10 +11,11 @@ Mi Inbox es una solución corporativa de mensajería interna diseñada para alta
 - **Mensajería Instantánea**: Uso de **Laravel Reverb** con eventos `ShouldBroadcastNow` para eliminar latencias de cola en acciones críticas.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/f5bac80b-3017-4adf-b6a3-ebca2af2bf70" alt="image" width="800">
-</p>
+  <img src="https://github.com/user-attachments/assets/f5bac80b-3017-4adf-b6a3-ebca2af2bf70" alt="image" width="800" height="800">
+  
+  <img width="800" height="800" alt="image" src="https://github.com/user-attachments/assets/700fb0fb-acef-4bf5-a984-1e95c57a6623" />
 
----
+<img width="800" height="800" alt="image" src="https://github.com/user-attachments/assets/0e572bab-6f0f-4859-8f0f-13a569be7a9b" />
 
 ## 🚀 Guía de Instalación
 
