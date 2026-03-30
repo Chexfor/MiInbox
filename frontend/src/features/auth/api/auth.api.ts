@@ -3,6 +3,7 @@ import api from '../../../core/api/axios.instance';
 export interface LoginCredentials {
   email: string;
   password: string;
+  force?: boolean;
 }
 
 export interface AuthTokenResponse {

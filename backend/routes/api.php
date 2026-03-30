@@ -18,7 +18,7 @@ Route::prefix('v1')->group(function () {
     });
 
     // Auth – Protected routes (require valid JWT)
-    Route::middleware('auth:api')->group(function () {
+    Route::middleware(['auth:api', \App\Http\Middleware\EnsureValidJti::class])->group(function () {
         Route::prefix('auth')->group(function () {
             Route::get('me', [AuthController::class, 'me']);
             Route::post('logout', [AuthController::class, 'logout']);

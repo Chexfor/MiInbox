@@ -26,8 +26,7 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('auth_token');
-      // Optional: Add redirect to login if using Router
-      // window.location.href = '/login';
+      window.dispatchEvent(new Event('auth_unauthorized'));
     }
     return Promise.reject(error);
   }

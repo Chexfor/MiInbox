@@ -89,9 +89,7 @@ export const ChatArea: React.FC<ChatAreaProps> = ({ thread }) => {
 
       {/* 3. CUERPO DEL MENSAJE (Historial) */}
       <div className="flex-1 overflow-hidden relative group">
-        <div className="absolute top-0 left-8 px-2 bg-slate-900 text-[10px] font-bold text-slate-600 uppercase z-10 transition-opacity">
-           Cuerpo del mensaje...
-        </div>
+        {/* Leyenda eliminada por ser muy explícita */}
         
         <div className="h-full pt-4">
           <MessageList 

@@ -36,7 +36,7 @@ final class SendMessageHandler
                 ->where('user_id', '!=', $command->senderId)
                 ->increment('unread_count');
 
-            // Optional: MessageSent::dispatch($message); // We'll fully implement broadcasting in Etapa 4/6
+            \App\Events\MessageSent::dispatch($message);
 
             return $message;
         });

@@ -1,10 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ThreadList } from './ThreadList';
 import { ChatArea } from './ChatArea';
 import { NewChatModal } from './NewChatModal';
 import { Search, Plus, Mail, MessageSquare, ChevronLeft } from 'lucide-react';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import type { Thread } from '../types';
+import echo from '@/core/realtime/echo.config';
+import { toast } from 'react-hot-toast';
+
+const playNotificationSound = () => {
+  try {
+    const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+    oscillator.frequency.setValueAtTime(1760, audioCtx.currentTime + 0.1);
+    
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.05);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    oscillator.start();
+    oscillator.stop(audioCtx.currentTime + 0.3);
+  } catch (e) {
+    console.warn("Audio play blocked", e);
+  }
+};
 
 export const MessagingLayout: React.FC = () => {
   const { user } = useAuth();
@@ -21,6 +47,35 @@ export const MessagingLayout: React.FC = () => {
   const handleBackToList = () => {
     setIsMobileListOpen(true);
   };
+
+  useEffect(() => {
+    if (!user?.id) return;
+    
+    const channel = echo.private(`user.${user.id}`);
+    
+    channel.listen('MessageSent', (event: any) => {
+      // Only notify if we are NOT currently looking at the thread
+      if (selectedThread?.id !== event.thread_id && event.sender?.id !== user.id) {
+        toast.custom((t) => (
+          <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-sm w-full bg-slate-900 shadow-xl rounded-2xl pointer-events-auto flex ring-1 ring-black/5`}>
+            <div className="flex-1 w-0 p-4">
+              <div className="flex items-start">
+                <div className="ml-3 flex-1">
+                  <p className="text-sm font-medium text-white">Nuevo mensaje de {event.sender?.name}</p>
+                  <p className="mt-1 text-sm text-slate-400">{event.body.substring(0, 40)}{event.body.length > 40 ? '...' : ''}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ));
+        playNotificationSound();
+      }
+    });
+
+    return () => {
+      echo.leave(`user.${user.id}`);
+    };
+  }, [user?.id, selectedThread?.id]);
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-indigo-500/30 overflow-hidden">

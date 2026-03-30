@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { messagingApi } from '../api/messaging.api';
 import type { Message } from '../types';
+import echo from '@/core/realtime/echo.config';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 
 export const useInfiniteMessages = (threadId: number | null) => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -8,6 +10,7 @@ export const useInfiniteMessages = (threadId: number | null) => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [isSending, setIsSending] = useState(false);
+  const { user } = useAuth();
 
   const currentRequestThreadId = useRef<number | null>(null);
   const isFetchingRef = useRef(false);
@@ -72,6 +75,31 @@ export const useInfiniteMessages = (threadId: number | null) => {
     }
   }, [threadId, fetchMessages]);
 
+  useEffect(() => {
+    if (!threadId || !user?.id) return;
+
+    const channel = echo.private(`user.${user.id}`);
+    
+    const messageHandler = (event: any) => {
+      // Si el backend envía el Resource completo, 'event' tiene la misma estructura que Message
+      if (event.thread_id === threadId) {
+        setMessages(prev => {
+          if (prev.some(m => m.id === event.id)) return prev;
+          
+          const nextMessages = [...prev, event as Message];
+          messagesRef.current = nextMessages;
+          return nextMessages;
+        });
+      }
+    };
+
+    channel.listen('MessageSent', messageHandler);
+
+    return () => {
+      // Evitamos leave() porque el MessagingLayout también lo utiliza.
+    };
+  }, [threadId, user?.id]);
+
   const loadMore = useCallback(() => {
     if (hasMore && !isLoading && !isFetchingRef.current) {
       fetchMessages(false);
@@ -86,7 +114,14 @@ export const useInfiniteMessages = (threadId: number | null) => {
       const response = await messagingApi.sendMessage(threadId, { body, type });
       
       setMessages(prev => {
-        const nextMessages = [...prev, response.data];
+        // En Laravel los Resources a veces devuelven un doble `data` envelope cuando se usan dentro de response()->json(). 
+        // Desencapsulamos asegurando de tener el Message object.
+        const newMessage = ('data' in response.data) ? (response.data as any).data : response.data;
+        
+        // Evitar duplicados por si el socket llegó primero
+        if (prev.some(m => m.id === newMessage.id)) return prev;
+
+        const nextMessages = [...prev, newMessage];
         messagesRef.current = nextMessages;
         return nextMessages;
       });
@@ -106,6 +141,7 @@ export const useInfiniteMessages = (threadId: number | null) => {
     hasMore,
     isSending,
     loadMore,
-    sendMessage
+    sendMessage,
+    setMessages
   };
 };
