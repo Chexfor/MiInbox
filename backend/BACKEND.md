@@ -57,6 +57,6 @@ El código se organiza en capas para facilitar su mantenimiento:
 
 ## ☑️ Pruebas (Tests)
 Para validar el sistema completo y asegurar la calidad del código: `php artisan test`
-
+<p align="center"><img src="https://github.com/user-attachments/assets/948de741-fab1-4d6a-bcb0-2eb299c4e188" alt="Resultado de pruebas" width="700"></p>```
 ---
 © 2026 Mi Inbox Backend - Ingeniería de Software de Alta Calidad.
