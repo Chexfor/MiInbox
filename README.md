@@ -10,6 +10,9 @@ Mi Inbox es una solución corporativa de mensajería interna diseñada para alta
 - **Multisesión Inteligente**: Seguimiento de **JTI** para permitir que un usuario "patee" (Kick) su propia sesión en otros dispositivos de forma inmediata.
 - **Mensajería Instantánea**: Uso de **Laravel Reverb** con eventos `ShouldBroadcastNow` para eliminar latencias de cola en acciones críticas.
 
+  
+<p align="center"><img src="https://github.com/user-attachments/assets/948de741-fab1-4d6a-bcb0-2eb299c4e188" alt="Resultado de pruebas" width="700"></p>
+
 ---
 
 ## 🚀 Guía de Instalación
@@ -43,12 +46,11 @@ Para que el tiempo real funcione, los valores de **Reverb** deben estar perfecta
 > Si cambias el puerto de Reverb en el backend, debes actualizarlo inmediatamente en el frontend para evitar errores de conexión (handshake).
 
 ### 3. Ejecución de Servicios (Mantener 4 terminales abiertas)
-**Dentro de la carpeta backend **
+## Dentro de la carpeta backend
 1. **API**: `php artisan serve`
 2. **WebSockets (Reverb)**: `php artisan reverb:start`
 3. **Procesador de Colas**: `php artisan queue:work`
-**Dentro de la carpeta frontend **
-4. **Frontend**: `npm install , npm run dev`
+4. **Dentro de la carpeta Frontend**: `npm install , npm run dev`
 
 ---
 
