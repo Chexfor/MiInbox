@@ -60,8 +60,8 @@ php artisan test
 ---
 
 ## 🗺️ Documentación Adicional
-- 🔗 **[Backend Specs](./backend/README.md)**: Flujos DDD/CQRS, Controladores y Migraciones.
-- 🔗 **[Frontend Specs](./frontend/README.md)**: Hooks maestros (`useAuth`, `useInfiniteMessages`), UI con Tailwind 4.
+- 🔗 **[Backend Specs](./backend/BACKEND.md)**: Flujos DDD/CQRS, Controladores y Migraciones.
+- 🔗 **[Frontend Specs](./frontend/FRONTEND.md)**: Hooks maestros (`useAuth`, `useInfiniteMessages`), UI con Tailwind 4.
 
 ---
 
